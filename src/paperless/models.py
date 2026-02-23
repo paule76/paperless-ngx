@@ -250,7 +250,6 @@ class ApplicationConfiguration(AbstractSingletonModel):
     barcode_max_pages = models.PositiveIntegerField(
         verbose_name=_("Sets the maximum pages for barcode"),
         null=True,
-        validators=[MinValueValidator(1)],
     )
 
     # PAPERLESS_CONSUMER_ENABLE_TAG_BARCODE
