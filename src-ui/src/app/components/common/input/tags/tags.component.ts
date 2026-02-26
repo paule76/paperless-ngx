@@ -74,6 +74,7 @@ export class TagsComponent implements OnInit, ControlValueAccessor {
   ngOnInit(): void {
     this.tagService.listAll().subscribe((result) => {
       this.tags = result.results
+      this._fetchedIds.clear()
       this.fetchMissingTags()
     })
   }

@@ -64,7 +64,7 @@ describe('SelectComponent', () => {
     fixture.detectChanges()
   })
 
-  it('should support private items when fetchItem is not set', () => {
+  it('should support private items', () => {
     component.value = 3
     component.items = items
     expect(component.items).toContainEqual({
@@ -86,7 +86,7 @@ describe('SelectComponent', () => {
     })
   })
 
-  it('should fetch unknown items from API and show real name instead of Private', fakeAsync(() => {
+  it('should fetch unknown item from API when not in items list', fakeAsync(() => {
     const mockFetch = jest.fn().mockReturnValue(of({ id: 99, name: 'NewFolder' }))
     component.fetchItem = mockFetch
     component.value = 99
@@ -101,7 +101,7 @@ describe('SelectComponent', () => {
     expect(component.items.find((i) => i.id === 99)?.private).toBeFalsy()
   }))
 
-  it('should mark unknown item as Private when API returns error', fakeAsync(() => {
+  it('should fall back to Private when API fetch fails', fakeAsync(() => {
     const mockFetch = jest
       .fn()
       .mockReturnValue(throwError(() => ({ status: 403 })))
@@ -117,7 +117,7 @@ describe('SelectComponent', () => {
     )
   }))
 
-  it('should not send duplicate requests for the same unknown ID', fakeAsync(() => {
+  it('should not fetch the same unknown ID twice', fakeAsync(() => {
     const mockFetch = jest.fn().mockReturnValue(of({ id: 99, name: 'NewFolder' }))
     component.fetchItem = mockFetch
     component.value = 99

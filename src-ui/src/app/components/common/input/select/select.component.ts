@@ -45,11 +45,6 @@ export class SelectComponent extends AbstractInputComponent<number> {
   _items: any[]
 
   @Input()
-  fetchItem: ((id: number) => Observable<ObjectWithId>) | null = null
-
-  private _pendingIds = new Set<number>()
-
-  @Input()
   set items(items) {
     this._items = items
     if (items && this.value) this.checkForPrivateItems(this.value)
@@ -136,6 +131,9 @@ export class SelectComponent extends AbstractInputComponent<number> {
   @Input()
   hideAddButton: boolean = false
 
+  @Input()
+  fetchItem: (id: number) => Observable<ObjectWithId>
+
   @Output()
   createNew = new EventEmitter<string>()
 
@@ -145,6 +143,8 @@ export class SelectComponent extends AbstractInputComponent<number> {
   public addItemRef: (name) => void
 
   private _lastSearchTerm: string
+
+  private _pendingIds = new Set<number>()
 
   get allowCreateNew(): boolean {
     return !this.disableCreateNew && this.createNew.observers.length > 0
