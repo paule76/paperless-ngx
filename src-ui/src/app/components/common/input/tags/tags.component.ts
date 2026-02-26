@@ -81,8 +81,9 @@ export class TagsComponent implements OnInit, ControlValueAccessor {
   private fetchMissingTags() {
     if (!this.value?.length) return
     this.value
-      .filter((id) => !this.tags.find((t) => t.id === id))
+      .filter((id) => !this.tags.find((t) => t.id === id) && !this._fetchedIds.has(id))
       .forEach((id) => {
+        this._fetchedIds.add(id)
         this.tagService.get(id).subscribe({
           next: (tag) => {
             this.tags = [...this.tags, tag]
@@ -127,6 +128,8 @@ export class TagsComponent implements OnInit, ControlValueAccessor {
   value: number[] = []
 
   tags: Tag[] = []
+
+  private _fetchedIds = new Set<number>()
 
   public createTagRef: (name) => void
 
