@@ -103,7 +103,9 @@ export abstract class AbstractPaperlessService<T extends ObjectWithId> {
 
   getCachedMany(ids: number[]): Observable<T[]> {
     return this.listAll().pipe(
-      map((list) => ids.map((id) => list.results.find((o) => o.id == id)))
+      map((list) =>
+        ids.map((id) => list.results.find((o) => o.id == id)).filter(Boolean)
+      )
     )
   }
 
