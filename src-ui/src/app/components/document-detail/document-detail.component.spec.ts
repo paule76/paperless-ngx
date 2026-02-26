@@ -211,6 +211,7 @@ describe('DocumentDetailComponent', () => {
                   },
                 ],
               }),
+            get: (id: number) => of({ id, name: `Correspondent${id}` }),
           },
         },
         {
@@ -225,6 +226,7 @@ describe('DocumentDetailComponent', () => {
                   },
                 ],
               }),
+            get: (id: number) => of({ id, name: `DocumentType${id}` }),
           },
         },
         {
@@ -239,6 +241,7 @@ describe('DocumentDetailComponent', () => {
                   },
                 ],
               }),
+            get: (id: number) => of({ id, name: `StoragePath${id}` }),
           },
         },
         {
