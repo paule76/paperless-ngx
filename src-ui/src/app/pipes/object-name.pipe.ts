@@ -1,5 +1,5 @@
 import { inject, Pipe, PipeTransform } from '@angular/core'
-import { catchError, map, Observable, of, switchMap } from 'rxjs'
+import { catchError, map, Observable } from 'rxjs'
 import { MatchingModel } from '../data/matching-model'
 import {
   PermissionAction,
@@ -32,16 +32,8 @@ export abstract class ObjectNamePipe implements PipeTransform {
         this.permissionType
       )
     ) {
-      return this.objectService.listAll().pipe(
-        switchMap((objects) => {
-          this.objects = objects.results
-          const found = this.objects.find((o) => o.id === obejctId)
-          if (found) return of(found.name)
-          return this.objectService.get(obejctId).pipe(
-            map((o) => o.name),
-            catchError(() => of($localize`Private`))
-          )
-        }),
+      return this.objectService.getCached(obejctId).pipe(
+        map((o) => o?.name ?? $localize`Private`),
         catchError(() => of(''))
       )
     } else {
