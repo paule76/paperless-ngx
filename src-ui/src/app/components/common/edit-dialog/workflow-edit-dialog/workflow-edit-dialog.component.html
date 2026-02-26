@@ -262,9 +262,9 @@
           <div class="col">
             <pngx-input-text i18n-title title="Assign title" formControlName="assign_title" i18n-hint hint="Can include some placeholders, see <a target='_blank' href='https://docs.paperless-ngx.com/usage/#workflows'>documentation</a>." [error]="error?.actions?.[i]?.assign_title"></pngx-input-text>
             <pngx-input-tags [allowCreate]="false" i18n-title title="Assign tags" formControlName="assign_tags"></pngx-input-tags>
-            <pngx-input-select i18n-title title="Assign document type" [items]="documentTypes" [allowNull]="true" formControlName="assign_document_type"></pngx-input-select>
-            <pngx-input-select i18n-title title="Assign correspondent" [items]="correspondents" [allowNull]="true" formControlName="assign_correspondent"></pngx-input-select>
-            <pngx-input-select i18n-title title="Assign storage path" [items]="storagePaths" [allowNull]="true" formControlName="assign_storage_path"></pngx-input-select>
+            <pngx-input-select i18n-title title="Assign document type" [items]="documentTypes" [allowNull]="true" formControlName="assign_document_type" [fetchItem]="fetchDocumentType"></pngx-input-select>
+            <pngx-input-select i18n-title title="Assign correspondent" [items]="correspondents" [allowNull]="true" formControlName="assign_correspondent" [fetchItem]="fetchCorrespondent"></pngx-input-select>
+            <pngx-input-select i18n-title title="Assign storage path" [items]="storagePaths" [allowNull]="true" formControlName="assign_storage_path" [fetchItem]="fetchStoragePath"></pngx-input-select>
             <pngx-input-select i18n-title title="Assign custom fields" multiple="true" [items]="customFields" [allowNull]="true" formControlName="assign_custom_fields"></pngx-input-select>
             <pngx-input-custom-fields-values formControlName="assign_custom_fields_values" [selectedFields]="formGroup.get('assign_custom_fields').value" (removeSelectedField)="removeSelectedCustomField($event, formGroup)"></pngx-input-custom-fields-values>
           </div>
@@ -326,19 +326,19 @@
             <h6 class="form-label" i18n>Remove correspondents</h6>
             <pngx-input-switch i18n-title title="Remove all" [horizontal]="true" formControlName="remove_all_correspondents"></pngx-input-switch>
             <div class="mt-n3">
-              <pngx-input-select i18n-title title="" multiple="true" [items]="correspondents" formControlName="remove_correspondents"></pngx-input-select>
+              <pngx-input-select i18n-title title="" multiple="true" [items]="correspondents" formControlName="remove_correspondents" [fetchItem]="fetchCorrespondent"></pngx-input-select>
             </div>
 
             <h6 class="form-label" i18n>Remove document types</h6>
             <pngx-input-switch i18n-title title="Remove all" [horizontal]="true" formControlName="remove_all_document_types"></pngx-input-switch>
             <div class="mt-n3">
-              <pngx-input-select i18n-title title="" multiple="true" [items]="documentTypes" formControlName="remove_document_types"></pngx-input-select>
+              <pngx-input-select i18n-title title="" multiple="true" [items]="documentTypes" formControlName="remove_document_types" [fetchItem]="fetchDocumentType"></pngx-input-select>
             </div>
 
             <h6 class="form-label" i18n>Remove storage paths</h6>
             <pngx-input-switch i18n-title title="Remove all" [horizontal]="true" formControlName="remove_all_storage_paths"></pngx-input-switch>
             <div class="mt-n3">
-              <pngx-input-select i18n-title title="" multiple="true" [items]="storagePaths" formControlName="remove_storage_paths"></pngx-input-select>
+              <pngx-input-select i18n-title title="" multiple="true" [items]="storagePaths" formControlName="remove_storage_paths" [fetchItem]="fetchStoragePath"></pngx-input-select>
             </div>
 
             <h6 class="form-label" i18n>Remove custom fields</h6>

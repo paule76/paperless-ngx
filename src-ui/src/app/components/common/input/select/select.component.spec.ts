@@ -11,6 +11,7 @@ import {
 } from '@angular/forms'
 import { RouterTestingModule } from '@angular/router/testing'
 import { NgSelectModule } from '@ng-select/ng-select'
+import { of, throwError } from 'rxjs'
 import {
   DEFAULT_MATCHING_ALGORITHM,
   MATCH_ALL,
@@ -63,7 +64,7 @@ describe('SelectComponent', () => {
     fixture.detectChanges()
   })
 
-  it('should support private items', () => {
+  it('should support private items when fetchItem is not set', () => {
     component.value = 3
     component.items = items
     expect(component.items).toContainEqual({
@@ -84,6 +85,48 @@ describe('SelectComponent', () => {
       private: true,
     })
   })
+
+  it('should fetch unknown items from API and show real name instead of Private', fakeAsync(() => {
+    const mockFetch = jest.fn().mockReturnValue(of({ id: 99, name: 'NewFolder' }))
+    component.fetchItem = mockFetch
+    component.value = 99
+    component.items = [...items]
+    tick()
+    fixture.detectChanges()
+
+    expect(mockFetch).toHaveBeenCalledWith(99)
+    expect(component.items).toContainEqual(
+      expect.objectContaining({ id: 99, name: 'NewFolder' })
+    )
+    expect(component.items.find((i) => i.id === 99)?.private).toBeFalsy()
+  }))
+
+  it('should mark unknown item as Private when API returns error', fakeAsync(() => {
+    const mockFetch = jest
+      .fn()
+      .mockReturnValue(throwError(() => ({ status: 403 })))
+    component.fetchItem = mockFetch
+    component.value = 99
+    component.items = [...items]
+    tick()
+    fixture.detectChanges()
+
+    expect(mockFetch).toHaveBeenCalledWith(99)
+    expect(component.items).toContainEqual(
+      expect.objectContaining({ id: 99, private: true })
+    )
+  }))
+
+  it('should not send duplicate requests for the same unknown ID', fakeAsync(() => {
+    const mockFetch = jest.fn().mockReturnValue(of({ id: 99, name: 'NewFolder' }))
+    component.fetchItem = mockFetch
+    component.value = 99
+    component.items = [...items]
+    component.checkForPrivateItems(99)
+    tick()
+
+    expect(mockFetch).toHaveBeenCalledTimes(1)
+  }))
 
   it('should support suggestions', () => {
     expect(component.value).toBeUndefined()

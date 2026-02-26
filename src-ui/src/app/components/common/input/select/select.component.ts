@@ -13,6 +13,8 @@ import {
 import { RouterModule } from '@angular/router'
 import { NgSelectModule } from '@ng-select/ng-select'
 import { NgxBootstrapIconsModule } from 'ngx-bootstrap-icons'
+import { Observable } from 'rxjs'
+import { ObjectWithId } from 'src/app/data/object-with-id'
 import { AbstractInputComponent } from '../abstract-input'
 
 @Component({
@@ -43,6 +45,11 @@ export class SelectComponent extends AbstractInputComponent<number> {
   _items: any[]
 
   @Input()
+  fetchItem: ((id: number) => Observable<ObjectWithId>) | null = null
+
+  private _pendingIds = new Set<number>()
+
+  @Input()
   set items(items) {
     this._items = items
     if (items && this.value) this.checkForPrivateItems(this.value)
@@ -64,13 +71,31 @@ export class SelectComponent extends AbstractInputComponent<number> {
     }
   }
 
-  checkForPrivateItem(id) {
-    if (this._items.find((i) => i.id === id) === undefined) {
-      this._items.push({
-        id: id,
-        name: $localize`Private`,
-        private: true,
+  checkForPrivateItem(id: number) {
+    if (this._items.find((i) => i.id === id) !== undefined) return
+    if (this._pendingIds.has(id)) return
+
+    if (this.fetchItem) {
+      this._pendingIds.add(id)
+      this._items.push({ id, name: '…', private: false })
+
+      this.fetchItem(id).subscribe({
+        next: (item) => {
+          this._pendingIds.delete(id)
+          const idx = this._items.findIndex((i) => i.id === id)
+          if (idx !== -1) this._items[idx] = item
+          this.items = [...this._items]
+        },
+        error: () => {
+          this._pendingIds.delete(id)
+          const idx = this._items.findIndex((i) => i.id === id)
+          if (idx !== -1)
+            this._items[idx] = { id, name: $localize`Private`, private: true }
+          this.items = [...this._items]
+        },
       })
+    } else {
+      this._items.push({ id, name: $localize`Private`, private: true })
     }
   }
 
