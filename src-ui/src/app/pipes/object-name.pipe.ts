@@ -1,5 +1,5 @@
 import { inject, Pipe, PipeTransform } from '@angular/core'
-import { catchError, map, Observable } from 'rxjs'
+import { catchError, map, Observable, of } from 'rxjs'
 import { MatchingModel } from '../data/matching-model'
 import {
   PermissionAction,
