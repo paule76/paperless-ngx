@@ -39,7 +39,16 @@ export class TagComponent {
         )
       ) {
         this.tagService.getCached(this._tagID).subscribe((tag) => {
-          this.tag = tag
+          if (tag) {
+            this.tag = tag
+          } else {
+            this.tagService.get(this._tagID).subscribe({
+              next: (fetchedTag) => {
+                this.tag = fetchedTag
+              },
+              error: () => {},
+            })
+          }
         })
       }
     }
