@@ -85,9 +85,13 @@ export class TagsComponent implements OnInit, ControlValueAccessor {
       .filter((id) => !this.tags.find((t) => t.id === id) && !this._fetchedIds.has(id))
       .forEach((id) => {
         this._fetchedIds.add(id)
+        this.tags = [
+          ...this.tags,
+          { id, name: '…', is_inbox_tag: false, color: '#a6cee3', text_color: '#000000' } as Tag,
+        ]
         this.tagService.get(id).subscribe({
           next: (tag) => {
-            this.tags = [...this.tags, tag]
+            this.tags = this.tags.map((t) => (t.id === id ? tag : t))
           },
           error: () => {},
         })
