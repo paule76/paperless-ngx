@@ -59,6 +59,7 @@ export class TagsComponent implements OnInit, ControlValueAccessor {
 
   writeValue(newValue: number[]): void {
     this.value = newValue
+    if (this.tags) this.fetchMissingTags()
   }
   registerOnChange(fn: any): void {
     this.onChange = fn
@@ -73,7 +74,22 @@ export class TagsComponent implements OnInit, ControlValueAccessor {
   ngOnInit(): void {
     this.tagService.listAll().subscribe((result) => {
       this.tags = result.results
+      this.fetchMissingTags()
     })
+  }
+
+  private fetchMissingTags() {
+    if (!this.value?.length) return
+    this.value
+      .filter((id) => !this.tags.find((t) => t.id === id))
+      .forEach((id) => {
+        this.tagService.get(id).subscribe({
+          next: (tag) => {
+            this.tags = [...this.tags, tag]
+          },
+          error: () => {},
+        })
+      })
   }
 
   @Input()
