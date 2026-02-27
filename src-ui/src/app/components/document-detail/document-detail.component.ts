@@ -205,6 +205,10 @@ export class DocumentDetailComponent
   @ViewChild('inputTitle')
   titleInput: TextComponent
 
+  fetchCorrespondent = (id: number) => this.correspondentService.get(id)
+  fetchDocumentType = (id: number) => this.documentTypeService.get(id)
+  fetchStoragePath = (id: number) => this.storagePathService.get(id)
+
   expandOriginalMetadata = false
   expandArchivedMetadata = false
 
